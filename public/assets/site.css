@@ -1033,3 +1033,10 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
 /* ---------- Home mobile: el ciclo no queda fijo, mide lo que su contenido ---------- */
 .ciclo.libre .sticky{position:relative;height:auto;min-height:0;overflow:visible}
 .ciclo.libre .wrap{height:auto;padding-block:52px;align-content:start}
+@media (max-width:860px){
+  .ciclo.libre .anillo{width:min(64vw,240px)}
+  .anillo-centro{padding:0 22%}
+  .anillo-centro small{font-size:.62rem}
+  .anillo-centro b{font-size:clamp(2.2rem,11vw,3rem)}
+  .anillo-centro span{font-size:.72rem;max-width:12ch;line-height:1.25}
+}
