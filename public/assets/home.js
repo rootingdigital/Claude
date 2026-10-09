@@ -5,10 +5,10 @@
   const MOVIL = matchMedia("(max-width:700px)").matches;
   const CONEXION = navigator.connection || {}, AHORRO = !!(CONEXION.saveData || /(^|-)2g$/.test(CONEXION.effectiveType || ""));
   const HERO_FOTO = MOVIL ? "assets/hero-poster-m.jpg" : "assets/hero-poster.jpg";
-  /* Video del banner: archivo propio (p. ej. "assets/hero.mp4?v=20261009g") y el tramo que se repite en loop, en segundos. */
+  /* Video del banner: archivo propio (p. ej. "assets/hero.mp4?v=20261009h") y el tramo que se repite en loop, en segundos. */
   // hero.mp4 / hero.webm ya son el tramo 0:25–0:40 del video original (15 s), así que el loop va de 0 a 15
   /* En celulares se usa una versión liviana (854 px, ~1,2 MB); con ahorro de datos o 2G no se carga el video y queda la foto. */
-  const HERO_VIDEO = AHORRO ? "" : MOVIL ? "assets/hero-m.mp4?v=20261009g" : (() => { const t = document.createElement("video"); return t.canPlayType('video/webm; codecs="vp9"') ? "assets/hero.webm?v=20261009g" : "assets/hero.mp4?v=20261009g"; })(), VIDEO_DESDE = 0, VIDEO_HASTA = 15;
+  const HERO_VIDEO = AHORRO ? "" : MOVIL ? "assets/hero-m.mp4?v=20261009h" : (() => { const t = document.createElement("video"); return t.canPlayType('video/webm; codecs="vp9"') ? "assets/hero.webm?v=20261009h" : "assets/hero.mp4?v=20261009h"; })(), VIDEO_DESDE = 0, VIDEO_HASTA = 15;
   const BB = window.BB, reduced = BB.reduced, clamp = BB.clamp, wa = BB.wa;
   const desktopMQ = matchMedia("(min-width:861px)");
   const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
@@ -155,8 +155,9 @@
   let hDist = 0;
 
   function applyScene(s){
-    const p = s.cur, id = s.el.id;
+    let p = s.cur; const id = s.el.id;
     if (id === "inicio") {
+      if (!desktopMQ.matches) p = 0;   // en celulares el hero no se desvanece: se desplaza normal
       heroP = p;
       heroLines.forEach((l,i) => { const q = clamp((p - .1 - i*.08)/.45); l.style.transform = "translateY(" + (-q*60) + "%)"; l.style.opacity = 1 - q; l.style.filter = q ? "blur(" + (q*8) + "px)" : ""; });
       const q2 = clamp((p - .2)/.45);
@@ -187,7 +188,7 @@
         track.style.paddingRight = Math.max(0, (innerWidth - last.offsetWidth)/2) + "px";   // la última tarjeta termina centrada
         hDist = Math.max(0, track.scrollWidth - innerWidth);
         el.style.height = (hDist + vh*1.4) + "px";
-      } else { const h = parseFloat(el.dataset.h); el.style.height = ((desk ? h : Math.max(1.2, 1 + (h - 1)*.55)) * vh) + "px"; }   // en celulares las escenas son más cortas
+      } else { const h = parseFloat(el.dataset.h); el.style.height = ((desk ? h : el.id === "inicio" ? 1 : Math.max(1.2, 1 + (h - 1)*.55)) * vh) + "px"; }   // en celulares las escenas son más cortas
     });
     if (!desk || reduced) { track.style.paddingRight = ""; track.style.transform = ""; celdas.forEach(c => c.style.removeProperty("--f")); pasos.forEach(p => { p.style.opacity = ""; p.style.transform = ""; p.classList.remove("off"); }); canaFill.style.transform = ""; }
     scenes.forEach(s => { s.top = s.el.getBoundingClientRect().top + scrollY; s.len = Math.max(1, s.el.offsetHeight - vh); s.cur = s.tgt = clamp((scrollY - s.top)/s.len); if (s.active) applyScene(s); });

@@ -919,3 +919,18 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
 .fila.consulta .th{width:52px;height:52px}
 .fila.consulta .acc{grid-column:2/-1;justify-content:flex-start;flex-wrap:wrap}
 .fila.consulta small{white-space:normal;overflow:visible;text-overflow:clip}
+
+/* ---------- Home mobile: logo de Nosotros chico y menos espacio entre secciones ---------- */
+.scene.is-static .sticky>*{height:auto}
+@media (max-width:860px){
+  .nos-grid{position:relative}
+  .nosotros .iso-big{position:absolute;top:0;right:0;width:58px;order:0;margin:0}
+  .nos-txt .eyebrow,.nos-txt h2{padding-right:70px}
+}
+@media (max-width:700px){
+  .nosotros,.biosmart{padding-block:56px}
+  .numeros,.calc,.tecno,.contacto{padding-block:52px}
+  .metodo .wrap,.servicios .serv-in{padding-block:52px}
+  .ciclo .wrap{padding-block:64px 56px}
+  .nos-grid{gap:0}
+}
