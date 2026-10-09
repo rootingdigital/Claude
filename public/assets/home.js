@@ -5,10 +5,10 @@
   const MOVIL = matchMedia("(max-width:700px)").matches;
   const CONEXION = navigator.connection || {}, AHORRO = !!(CONEXION.saveData || /(^|-)2g$/.test(CONEXION.effectiveType || ""));
   const HERO_FOTO = MOVIL ? "assets/hero-poster-m.jpg" : "assets/hero-poster.jpg";
-  /* Video del banner: archivo propio (p. ej. "assets/hero.mp4?v=20261009h") y el tramo que se repite en loop, en segundos. */
+  /* Video del banner: archivo propio (p. ej. "assets/hero.mp4?v=20261009i") y el tramo que se repite en loop, en segundos. */
   // hero.mp4 / hero.webm ya son el tramo 0:25–0:40 del video original (15 s), así que el loop va de 0 a 15
   /* En celulares se usa una versión liviana (854 px, ~1,2 MB); con ahorro de datos o 2G no se carga el video y queda la foto. */
-  const HERO_VIDEO = AHORRO ? "" : MOVIL ? "assets/hero-m.mp4?v=20261009h" : (() => { const t = document.createElement("video"); return t.canPlayType('video/webm; codecs="vp9"') ? "assets/hero.webm?v=20261009h" : "assets/hero.mp4?v=20261009h"; })(), VIDEO_DESDE = 0, VIDEO_HASTA = 15;
+  const HERO_VIDEO = AHORRO ? "" : MOVIL ? "assets/hero-m.mp4?v=20261009i" : (() => { const t = document.createElement("video"); return t.canPlayType('video/webm; codecs="vp9"') ? "assets/hero.webm?v=20261009i" : "assets/hero.mp4?v=20261009i"; })(), VIDEO_DESDE = 0, VIDEO_HASTA = 15;
   const BB = window.BB, reduced = BB.reduced, clamp = BB.clamp, wa = BB.wa;
   const desktopMQ = matchMedia("(min-width:861px)");
   const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
@@ -188,7 +188,8 @@
         track.style.paddingRight = Math.max(0, (innerWidth - last.offsetWidth)/2) + "px";   // la última tarjeta termina centrada
         hDist = Math.max(0, track.scrollWidth - innerWidth);
         el.style.height = (hDist + vh*1.4) + "px";
-      } else { const h = parseFloat(el.dataset.h); el.style.height = ((desk ? h : el.id === "inicio" ? 1 : Math.max(1.2, 1 + (h - 1)*.55)) * vh) + "px"; }   // en celulares las escenas son más cortas
+      } else if (!desk && el.id === "inicio") { el.style.height = "";   // en celulares el inicio mide lo que su contenido
+      } else { const h = parseFloat(el.dataset.h); el.style.height = ((desk ? h : Math.max(1.2, 1 + (h - 1)*.55)) * vh) + "px"; }   // en celulares las escenas son más cortas
     });
     if (!desk || reduced) { track.style.paddingRight = ""; track.style.transform = ""; celdas.forEach(c => c.style.removeProperty("--f")); pasos.forEach(p => { p.style.opacity = ""; p.style.transform = ""; p.classList.remove("off"); }); canaFill.style.transform = ""; }
     scenes.forEach(s => { s.top = s.el.getBoundingClientRect().top + scrollY; s.len = Math.max(1, s.el.offsetHeight - vh); s.cur = s.tgt = clamp((scrollY - s.top)/s.len); if (s.active) applyScene(s); });
@@ -217,4 +218,75 @@
 
   new IntersectionObserver(es => { heroVisible = es[0].isIntersecting; if (heroVisible && reduced) drawHero(0); }).observe(document.querySelector("#inicio .sticky"));
   BB.start();
+})();
+
+
+/* ---------- Mobile: Servicios y bioSmart compactos, con detalle en una ventana ---------- */
+(function(){
+  const $ = (q, c) => (c || document).querySelector(q);
+  const mk = (tag, cls, html) => { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+  const X = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  const FLECHA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
+  let fondo = null, volver = null;
+
+  function cerrar(){
+    if (!fondo) return;
+    const f = fondo; fondo = null;
+    f.classList.remove("on"); document.documentElement.classList.remove("hoja-abierta");
+    setTimeout(() => f.remove(), 320);
+    if (volver) { try { volver.focus({preventScroll:true}); } catch(e){} volver = null; }
+  }
+  function abrir(cuerpo, etiqueta){
+    cerrar();
+    volver = document.activeElement;
+    fondo = mk("div", "hoja-fondo");
+    const hoja = mk("div", "hoja"); hoja.setAttribute("role", "dialog"); hoja.setAttribute("aria-modal", "true"); hoja.setAttribute("aria-label", etiqueta);
+    const x = mk("button", "hoja-x", X); x.type = "button"; x.setAttribute("aria-label", "Cerrar");
+    hoja.append(mk("span", "hoja-asa"), x, cuerpo); fondo.appendChild(hoja); document.body.appendChild(fondo);
+    document.documentElement.classList.add("hoja-abierta");
+    requestAnimationFrame(() => requestAnimationFrame(() => fondo && fondo.classList.add("on")));
+    fondo.addEventListener("click", e => { if (e.target === fondo) cerrar(); });
+    x.addEventListener("click", cerrar);
+    // deslizar hacia abajo para cerrar
+    let y0 = null, dy = 0;
+    hoja.addEventListener("touchstart", e => { y0 = hoja.scrollTop <= 0 ? e.touches[0].clientY : null; dy = 0; }, {passive:true});
+    hoja.addEventListener("touchmove", e => { if (y0 == null) return; dy = Math.max(0, e.touches[0].clientY - y0); hoja.style.transform = dy ? "translateY(" + dy + "px)" : ""; }, {passive:true});
+    hoja.addEventListener("touchend", () => { if (y0 == null) return; hoja.style.transform = ""; if (dy > 90) cerrar(); y0 = null; });
+    setTimeout(() => x.focus({preventScroll:true}), 60);
+  }
+  document.addEventListener("keydown", e => { if (e.key === "Escape") cerrar(); });
+
+  // Servicios: cada área queda como tarjeta con título; el detalle se abre en la ventana
+  document.querySelectorAll("#servicios .celda").forEach(c => {
+    const h3 = $("h3", c), area = $(".area", c), ico = $(".ico", c), intro = $(":scope > p", c), ul = $("ul", c), mas = $(".mas", c);
+    const ver = mk("button", "celda-ver", "Ver servicios " + FLECHA); ver.type = "button";
+    ver.setAttribute("aria-label", "Ver servicios de " + h3.textContent);
+    c.appendChild(ver);
+    const ir = () => {
+      const b = mk("div", "hoja-cuerpo");
+      const cab = mk("div", "hoja-cab"); cab.append(ico.cloneNode(true)); const t = mk("div"); t.append(mk("span", "area", area.textContent), mk("h3", "", h3.innerHTML)); cab.appendChild(t);
+      b.appendChild(cab);
+      if (intro) b.appendChild(mk("p", "hoja-intro", intro.innerHTML));
+      if (ul) { const l = ul.cloneNode(true); l.className = "hoja-lista"; b.appendChild(l); }
+      if (mas) { const a = mk("a", "btn btn-wa hoja-cta", "Ver el área completa " + FLECHA); a.href = mas.getAttribute("href"); b.appendChild(a); }
+      abrir(b, h3.textContent);
+    };
+    ver.addEventListener("click", e => { e.stopPropagation(); ir(); });
+    c.addEventListener("click", e => { if (matchMedia("(max-width:700px)").matches && !e.target.closest("a,.eco")) ir(); });
+  });
+
+  // bioSmart: queda el título; los pasos del programa se ven en la ventana
+  const bs = $("#biosmart .bs-head"), pasos = $("#biosmart .bs-pasos");
+  if (bs && pasos) {
+    const prog = $(".btn", bs);
+    const acts = mk("div", "bs-acts"); bs.insertBefore(acts, prog); acts.appendChild(prog);
+    const ver = mk("button", "btn btn-wa bs-ver", "Cómo funciona"); ver.type = "button"; acts.insertBefore(ver, prog);
+    ver.addEventListener("click", () => {
+      const b = mk("div", "hoja-cuerpo");
+      const cab = mk("div", "hoja-cab bs"); cab.appendChild(mk("div", "", '<span class="area">En alianza con SmartMeat</span><h3><span class="bs-marca">bio<em>Smart</em></span> · cómo funciona</h3>')); b.appendChild(cab);
+      const l = pasos.cloneNode(true); l.classList.add("hoja-pasos"); b.appendChild(l);
+      const a = mk("a", "btn btn-wa hoja-cta", "Conocer el programa " + FLECHA); a.href = prog.getAttribute("href"); b.appendChild(a);
+      abrir(b, "Cómo funciona bioSmart");
+    });
+  }
 })();
