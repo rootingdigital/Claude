@@ -1042,12 +1042,18 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
 }
 
 /* ---------- Nosotros: Responsabilidad Social Empresarial ---------- */
-.rse .seccion-head h2{max-width:22ch}
-.rse-grid{margin-top:8px}
-.rse .prose p+p{margin-top:1em}
-.rse-box{padding:clamp(20px,3vw,30px);border-radius:24px}
-.rse-box .lista{padding:0;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;margin-top:6px}
-.rse-box .lista-t{text-transform:none;letter-spacing:.02em;font-size:.8rem;line-height:1.5}
-.rse-cierre{margin:clamp(28px,4vw,48px) 0 0;padding:clamp(22px,3.4vw,36px) clamp(22px,4vw,44px);border-radius:24px;position:relative;border-left:4px solid var(--acc)}
-.rse-cierre p{font-family:var(--f-display);font-size:clamp(1.08rem,1.9vw,1.4rem);line-height:1.45;color:var(--head);font-weight:500;max-width:62ch}
+.rse-top{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
+.rse-top .seccion-head{margin:0}
+.rse-top .seccion-head h2{max-width:16ch}
+.rse-top .prose p+p{margin-top:1em}
+.rse-top .prose .lead{color:var(--head)}
+.rse-box{margin-top:clamp(36px,5vw,64px);padding:clamp(22px,3.4vw,40px);border-radius:24px}
+.rse-box h3{font-size:clamp(1.1rem,1.6vw,1.3rem);margin-bottom:18px;max-width:none}
+.rse-box .lista{padding:0;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;display:block;columns:2;column-gap:clamp(28px,4vw,56px)}
+.rse-box .lista li{break-inside:avoid;border-bottom:1px solid var(--line)}
+.rse-box .lista li:last-child{border-bottom:1px solid var(--line)}
+.rse-cierre{margin:clamp(20px,3vw,32px) 0 0;padding:clamp(22px,3.4vw,36px) clamp(22px,4vw,44px);border-radius:24px;border-left:4px solid var(--acc)}
+.rse-cierre p{font-family:var(--f-display);font-size:clamp(1.05rem,1.7vw,1.3rem);line-height:1.5;color:var(--head);font-weight:500}
+@media (max-width:860px){.rse-top{grid-template-columns:1fr}.rse-box .lista{columns:1}.rse-box .lista li:last-child{border-bottom:0}}
 @media (max-width:640px){.rse-box .lista li{font-size:.92rem}}
+.rse-top .prose p{font-size:1rem;line-height:1.65}.rse-top .prose .lead{font-size:clamp(1.05rem,1.4vw,1.18rem)}
