@@ -1,0 +1,134 @@
+{
+ "categorias": {
+  "biologicos": {
+   "descripcion": "Soluciones naturales para plagas y enfermedades.",
+   "nombre": "Control biológico",
+   "orden": 3
+  },
+  "boyeros": {
+   "descripcion": "Boyeros eléctricos y accesorios para pastoreo rotativo.",
+   "nombre": "Manejo forrajero",
+   "orden": 2
+  },
+  "pesaje": {
+   "descripcion": "Balanzas, lectores y caravanas electrónicas.",
+   "nombre": "Pesaje y trazabilidad",
+   "orden": 1
+  },
+  "suelo": {
+   "descripcion": "Herramientas para la biodiversidad del campo.",
+   "nombre": "Regeneración del suelo",
+   "orden": 4
+  }
+ },
+ "productos": {
+  "ej-lectores": {
+   "categoria": "pesaje",
+   "descripcion": "Identificación individual de cada animal para la trazabilidad y el registro.",
+   "ejemplo": true,
+   "foto": "",
+   "marca": "Gallagher",
+   "nombre": "Lectores de caravanas electrónicas",
+   "orden": 2,
+   "visible": true
+  },
+  "ej-biocontrol": {
+   "categoria": "biologicos",
+   "descripcion": "Control biológico de plagas y enfermedades en pasturas y cultivos.",
+   "ejemplo": true,
+   "foto": "",
+   "marca": "Koppert",
+   "nombre": "Biocontroladores",
+   "orden": 4,
+   "visible": true
+  },
+  "ej-balanzas": {
+   "categoria": "pesaje",
+   "descripcion": "Pesaje electrónico en la manga para convertir cada pasada en datos del rodeo.",
+   "ejemplo": true,
+   "foto": "",
+   "marca": "Gallagher",
+   "nombre": "Balanzas y barras de pesaje",
+   "orden": 1,
+   "visible": true
+  },
+  "ej-boyeros": {
+   "categoria": "boyeros",
+   "descripcion": "Energizadores para pastoreo rotativo, más carga animal y mejor aprovechamiento del pasto.",
+   "ejemplo": true,
+   "foto": "",
+   "marca": "Gallagher",
+   "nombre": "Boyeros eléctricos",
+   "orden": 3,
+   "visible": true
+  },
+  "ej-suelo": {
+   "categoria": "suelo",
+   "descripcion": "Herramientas que protegen la biodiversidad y sostienen altos rendimientos forrajeros.",
+   "ejemplo": true,
+   "foto": "",
+   "marca": "Koppert",
+   "nombre": "Soluciones para el suelo",
+   "orden": 5,
+   "visible": true
+  }
+ },
+ "blog": {
+  "ej-82-dias": {
+   "contenido": "Un año tiene 365 días y la gestación de una vaca dura 283. Si queremos **un ternero por vaca por año**, la cuenta es simple: quedan **82 días** desde el parto para volver a preñarla.\n\n## Qué pasa en esa ventana\n- Los primeros 40 a 60 días son de puerperio.\n- El servicio puede hacerse con un mínimo de 45 días posparto.\n- La vaca necesita una condición corporal mínima de 2,25 para volver a ciclar.\n\n## Qué podés hacer\nLa nutrición estratégica, el destete precoz y una buena revisación de toros antes del servicio son las herramientas que más pesan en esos 82 días.\n\nConocé nuestros [servicios de reproducción](reproduccion.html).",
+   "ejemplo": true,
+   "etiqueta": "Reproducción",
+   "fecha": "2026-10-08",
+   "foto": "",
+   "publicado": true,
+   "resumen": "Si la meta es un ternero por vaca por año, la vaca tiene 82 días desde el parto para volver a quedar preñada.",
+   "slug": "los-82-dias-que-definen-la-proxima-prenez",
+   "titulo": "Los 82 días que definen la próxima preñez"
+  },
+  "ej-21-dias": {
+   "contenido": "Cada ciclo de 21 días que una vaca queda vacía en el servicio se traduce en un ternero más chico al destete: entre **15 y 20 kg menos**.\n\n## Cómo se acumula la pérdida\nCon 120 vientres que se preñan un ciclo tarde, la diferencia puede llegar a más de 2.000 kg de ternero.\n\n## Cómo achicarla\n- Diagnóstico de gestación por ecografía.\n- Programas de IATF y resincronización.\n- Revisación de toros y calidad seminal antes del servicio.\n\nProbá la calculadora en la [página de inicio](index.html).",
+   "ejemplo": true,
+   "etiqueta": "Reproducción",
+   "fecha": "2026-10-01",
+   "foto": "",
+   "publicado": true,
+   "resumen": "Por cada 21 días que una vaca queda abierta en el servicio se pierden entre 15 y 20 kg de ternero al destete.",
+   "slug": "cada-21-dias-de-vaca-vacia-cuestan-kilos-al-destete",
+   "titulo": "Cada 21 días de vaca vacía cuestan kilos al destete"
+  }
+ },
+ "promos": {
+  "ej-toros": {
+   "activo": true,
+   "boton": "Ver el servicio",
+   "desde": "",
+   "donde": "todas",
+   "ejemplo": true,
+   "enlace": "reproduccion.html#toros",
+   "etiqueta": "Ejemplo de promoción",
+   "foto": "",
+   "hasta": "",
+   "orden": 1,
+   "texto": "Entre el 15 y el 20 % de los toros que pasan el examen físico tiene semen no satisfactorio. Revisalos antes de la temporada.",
+   "titulo": "Revisación de toros antes del servicio",
+   "version": 1
+  }
+ },
+ "config": {
+  "contacto": {
+   "email": "info@biobamboo.com.ar",
+   "horario": "",
+   "telefono": "+54 9 3462 654315",
+   "whatsapp": "5493462654315",
+   "zona": "A confirmar"
+  },
+  "redes": {
+   "facebook": "https://www.facebook.com/biobamboo.ganaderia",
+   "instagram": "https://www.instagram.com/biobamboo.oficial/",
+   "linkedin": "",
+   "tiktok": "",
+   "x": "",
+   "youtube": ""
+  }
+ }
+}
