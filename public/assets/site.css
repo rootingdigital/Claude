@@ -1040,3 +1040,14 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
   .anillo-centro b{font-size:clamp(2.2rem,11vw,3rem)}
   .anillo-centro span{font-size:.72rem;max-width:12ch;line-height:1.25}
 }
+
+/* ---------- Nosotros: Responsabilidad Social Empresarial ---------- */
+.rse .seccion-head h2{max-width:22ch}
+.rse-grid{margin-top:8px}
+.rse .prose p+p{margin-top:1em}
+.rse-box{padding:clamp(20px,3vw,30px);border-radius:24px}
+.rse-box .lista{padding:0;background:none;border:0;box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none;margin-top:6px}
+.rse-box .lista-t{text-transform:none;letter-spacing:.02em;font-size:.8rem;line-height:1.5}
+.rse-cierre{margin:clamp(28px,4vw,48px) 0 0;padding:clamp(22px,3.4vw,36px) clamp(22px,4vw,44px);border-radius:24px;position:relative;border-left:4px solid var(--acc)}
+.rse-cierre p{font-family:var(--f-display);font-size:clamp(1.08rem,1.9vw,1.4rem);line-height:1.45;color:var(--head);font-weight:500;max-width:62ch}
+@media (max-width:640px){.rse-box .lista li{font-size:.92rem}}
