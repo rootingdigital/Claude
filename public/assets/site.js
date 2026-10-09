@@ -40,8 +40,39 @@
   const pick = name => { if (!sel || !name) return; [...sel.options].forEach(o => { if (o.dataset.k === name || o.text === name) sel.value = o.value; }); };
   document.querySelectorAll("[data-servicio]").forEach(a => a.addEventListener("click", () => pick(a.dataset.servicio)));
   if (location.hash.length > 1) pick(location.hash.slice(1));
+  /* Formulario de contacto: se guarda en la base (panel > Consultas) y ofrece seguir por WhatsApp */
   const form = document.getElementById("ctForm");
-  if (form) form.addEventListener("submit", e => { e.preventDefault(); document.getElementById("formOk").hidden = false; });
+  if (form) {
+    const t0 = Date.now(), ok = document.getElementById("formOk"), err = document.getElementById("formErr"), waBtn = document.getElementById("formWa");
+    const val = id => { const n = document.getElementById(id); return n ? String(n.value || "").trim() : ""; };
+    const aviso = (n, t) => { n.textContent = t; n.hidden = !t; };
+    form.addEventListener("submit", async e => {
+      e.preventDefault(); aviso(ok, ""); aviso(err, "");
+      if (val("fWeb2")) return;                                   // trampa para robots
+      if (!form.reportValidity()) return;
+      if (Date.now() - t0 < 3000) { aviso(err, "Revisá los datos y volvé a tocar «Enviar consulta»."); return; }
+      try { if (Date.now() - (+localStorage.getItem("bb-consulta") || 0) < 60000) { aviso(err, "Ya recibimos tu consulta hace un momento. Si querés agregar algo, escribinos por WhatsApp."); waBtn.hidden = false; return; } } catch(x) {}
+      const sel = document.getElementById("fServ");
+      const d = {nombre: val("fNombre"), telefono: val("fTel"), email: val("fMail"), localidad: val("fLoc"), establecimiento: val("fEst"), cabezas: val("fCab"),
+        interes: sel ? sel.options[sel.selectedIndex].text : "", mensaje: val("fMsg"), pagina: (location.pathname.split("/").pop() || "index.html")};
+      const linea = [["Nombre", d.nombre], ["Teléfono", d.telefono], ["Mail", d.email], ["Localidad", d.localidad], ["Establecimiento", d.establecimiento], ["Cabezas aprox.", d.cabezas], ["Me interesa", d.interes]]
+        .filter(x => x[1]).map(x => x[0] + ": " + x[1]).join("\n");
+      waBtn.href = BB.wa("Hola bioBamboo, quiero hacer una consulta.\n" + linea + (d.mensaje ? "\n\n" + d.mensaje : ""));
+      const btn = form.querySelector("[type=submit]"); btn.disabled = true; const txtBtn = btn.textContent; btn.textContent = "Enviando…";
+      let guardada = false;
+      try {
+        const FB = window.BB_FB;
+        if (FB && FB.fs && window.firebase) { await FB.fs.collection("consultas").add(Object.assign({}, d, {fecha: firebase.firestore.FieldValue.serverTimestamp()})); guardada = true; }
+      } catch(x) { console.warn("bioBamboo consulta:", x); }
+      btn.disabled = false; btn.textContent = txtBtn; waBtn.hidden = false;
+      if (guardada) {
+        aviso(ok, "¡Gracias, " + d.nombre.split(" ")[0] + "! Recibimos tu consulta y te vamos a contactar a la brevedad.");
+        try { localStorage.setItem("bb-consulta", String(Date.now())); } catch(x) {}
+        form.querySelectorAll("input:not([type=hidden]),textarea").forEach(n => { if (n.id !== "fWeb2") n.value = ""; });
+      } else if (!window.BB_FB) aviso(ok, "Vista de demostración: la consulta no se guarda. Podés enviarla por WhatsApp con el botón de abajo.");
+      else aviso(err, "No pudimos registrar la consulta. Envianosla por WhatsApp con el botón de abajo.");
+    });
+  }
 
   /* =========================================================
      Menú dinámico: un panel que cambia de forma y posición

@@ -1,0 +1,10 @@
+    // Consultas del formulario de contacto: cualquiera puede ENVIAR una (con datos válidos); solo los administradores las ven.
+    match /consultas/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['nombre', 'telefono', 'email', 'localidad', 'establecimiento', 'cabezas', 'interes', 'mensaje', 'pagina', 'fecha'])
+        && request.resource.data.nombre is string && request.resource.data.nombre.size() > 1 && request.resource.data.nombre.size() <= 120
+        && request.resource.data.telefono is string && request.resource.data.telefono.size() >= 6 && request.resource.data.telefono.size() <= 40
+        && request.resource.data.email is string && request.resource.data.email.matches('^[^@ ]+@[^@ ]+[.][^@ ]+$') && request.resource.data.email.size() <= 160
+        && request.resource.data.get('mensaje', '') is string && request.resource.data.get('mensaje', '').size() <= 3000
+        && request.resource.data.fecha == request.time;
+      allow read, update, delete: if esAdmin();
+    }

@@ -881,3 +881,41 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
   .pie-base{flex-direction:column;align-items:flex-start;margin-top:32px}
 }
 @media (max-width:700px){.hero .sticky{background-image:url(hero-poster-m.jpg)}}
+
+/* ---------- Formulario de contacto ---------- */
+.form-pie{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.form-nota{font-size:.8rem;color:var(--ink-2)}
+.form-err{grid-column:1/-1;font-size:.92rem;color:#B3261E;font-weight:500;margin:0}
+.form-ok{margin:0}
+#formWa{justify-self:start}
+.form textarea{min-height:110px}
+/* panel: consultas */
+.solo-lectura .form-acts,.solo-lectura>p:last-child{display:none}
+.fila.consulta{align-items:start}
+.fila.consulta.respondida{opacity:.62}
+.consulta-datos{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:6px;font-size:.88rem}
+.consulta-datos a{color:var(--acc-ink);font-weight:600;text-decoration:none;overflow-wrap:anywhere}
+.consulta-msg{margin:8px 0 0;font-size:.9rem;color:var(--ink);white-space:pre-wrap;background:var(--chip-bg);padding:10px 12px;border-radius:12px}
+/* pie: redes junto a los íconos de contacto en celular */
+.pie-redes-m{display:none}
+@media (max-width:860px){
+  .pie-redes-m{display:contents}
+  .pie-base .pie-redes{display:none}
+  .pie-base{justify-content:flex-start}
+}
+/* formulario más compacto en celular */
+@media (max-width:860px){.form{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){
+  .form{gap:10px 10px;padding:18px 16px}
+  .form .campo{gap:5px}
+  .form .campo label{font-size:.8rem}
+  .form .campo input,.form .campo select,.form .campo textarea{padding:.6em .7em;font-size:.95rem;border-radius:10px}
+  .form textarea{min-height:84px}
+  .form-pie .btn{padding:.75em 1.1em}
+  .form-nota{font-size:.72rem}
+}
+@media (max-width:360px){.form{grid-template-columns:1fr}}
+.fila.consulta{grid-template-columns:52px minmax(0,1fr)}
+.fila.consulta .th{width:52px;height:52px}
+.fila.consulta .acc{grid-column:2/-1;justify-content:flex-start;flex-wrap:wrap}
+.fila.consulta small{white-space:normal;overflow:visible;text-overflow:clip}

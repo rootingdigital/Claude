@@ -171,7 +171,11 @@
   const slugify = s => txt(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 70) || "nota";
   const hoy = () => new Date().toISOString().slice(0, 10);
 
+  const fechaTxt = f => { try { const d = f && f.toDate ? f.toDate() : (f ? new Date(f) : null); return d && !isNaN(d) ? d.toLocaleString("es-AR", {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit"}) : ""; } catch(e) { return ""; } };
+  const fechaMs = f => { try { return f && f.toMillis ? f.toMillis() : (f ? +new Date(f) : 0); } catch(e) { return 0; } };
   const ESQ = {
+    consultas: {t: "Consultas recibidas", col: "consultas", lectura: true, ayuda: "Las consultas que llegan desde el formulario de la web. Respond\u00e9 por WhatsApp o por mail y marcalas como respondidas.",
+      sub: c => [fechaTxt(c.fecha), c.localidad, c.establecimiento, c.cabezas ? c.cabezas + " cabezas" : "", c.interes].filter(Boolean).join(" \u00b7 ")},
     productos: {t: "Producto", col: "productos", campos: [
       {k: "nombre", l: "Nombre", t: "text", req: true}, {k: "categoria", l: "Categoría", t: "cat"},
       {k: "marca", l: "Marca", t: "text", ph: "Gallagher, Koppert…"}, {k: "descripcion", l: "Descripción", t: "area"},
@@ -242,7 +246,7 @@
       }
     }
 
-    const data = {productos: [], categorias: [], equipo: [], promos: [], blog: []}, docs = {contacto: null, redes: null};
+    const data = {consultas: [], productos: [], categorias: [], equipo: [], promos: [], blog: []}, docs = {contacto: null, redes: null};
     let tab = (location.hash || "#productos").slice(1); if (!ESQ[tab]) tab = "productos";
     let editando = null, fotoNueva;
     const tabs = [...root.querySelectorAll(".tabs button")];
@@ -258,6 +262,7 @@
         const v = el("div", "estado"); v.append(el("b", null, E.t), el("span", null, E.acceso ? "Cambiá el email o la contraseña con la que se entra al panel. La contraseña se guarda cifrada." : E.ayuda));
         lista.appendChild(v); return;
       }
+      if (E.lectura) return pintarConsultas();
       const items = tab === "categorias" ? arbol() : data[tab].slice().sort(tab === "blog" ? (a, b) => txt(b.fecha).localeCompare(txt(a.fecha)) : byOrden);
       if (!items.length) { const v = el("div", "estado"); v.append(el("b", null, "Todavía no hay registros."), el("span", null, "Usá el formulario para cargar el primero.")); lista.appendChild(v); return; }
       items.forEach(it => {
@@ -290,8 +295,36 @@
       });
     }
 
+    function pintarConsultas(){
+      const items = data.consultas.slice().sort((a, b) => fechaMs(b.fecha) - fechaMs(a.fecha));
+      if (!items.length) { const v = el("div", "estado"); v.append(el("b", null, "Todav\u00eda no llegaron consultas."), el("span", null, "Cuando alguien complete el formulario de contacto, aparece ac\u00e1.")); lista.appendChild(v); return; }
+      items.forEach(c => {
+        const f = el("div", "fila consulta" + (c.respondida ? " respondida" : "")), th = el("div", "th"), tx = el("div");
+        th.textContent = txt(c.nombre || "?").slice(0, 1).toUpperCase();
+        tx.append(el("b", null, (c.nombre || "Sin nombre") + (c.respondida ? " \u00b7 respondida" : "")), el("small", null, ESQ.consultas.sub(c)));
+        const datos = el("div", "consulta-datos");
+        if (c.telefono) { const a = el("a", null, c.telefono); a.href = "tel:+" + txt(c.telefono).replace(/\D/g, ""); datos.appendChild(a); }
+        if (c.email) { const a = el("a", null, c.email); a.href = "mailto:" + c.email + "?subject=" + encodeURIComponent("Tu consulta a bioBamboo"); datos.appendChild(a); }
+        tx.appendChild(datos);
+        if (c.mensaje) tx.appendChild(el("p", "consulta-msg", c.mensaje));
+        const acc = el("div", "acc");
+        const tel = txt(c.telefono).replace(/\D/g, "");
+        if (tel.length >= 8) { const w = el("a", "mini", "WhatsApp"); w.href = "https://wa.me/" + tel + "?text=" + encodeURIComponent("Hola " + txt(c.nombre).split(" ")[0] + ", te escribimos de bioBamboo por tu consulta."); w.target = "_blank"; w.rel = "noopener"; acc.appendChild(w); }
+        const marcar = el("button", "mini", c.respondida ? "Marcar pendiente" : "Marcar respondida"), del = el("button", "mini peligro", "Borrar");
+        marcar.type = del.type = "button";
+        marcar.addEventListener("click", async () => { try { await db.collection("consultas").doc(c.id).update({respondida: !c.respondida}); } catch(e) { toast("No se pudo actualizar (" + (e.code || "error") + ")"); } });
+        del.addEventListener("click", async () => {
+          if (!del.classList.contains("conf")) { del.classList.add("conf"); del.textContent = "\u00bfConfirm\u00e1s?"; setTimeout(() => { del.classList.remove("conf"); del.textContent = "Borrar"; }, 4000); return; }
+          try { await db.collection("consultas").doc(c.id).delete(); toast("Borrada"); } catch(e) { toast("No se pudo borrar (" + (e.code || "error") + ")"); }
+        });
+        acc.append(marcar, del); f.append(th, tx, acc); lista.appendChild(f);
+      });
+    }
+
     function armarForm(it){
       const E = ESQ[tab]; fotoNueva = undefined;
+      form.classList.toggle("solo-lectura", !!E.lectura);
+      if (E.lectura) { editando = null; tit.textContent = E.t; campos.replaceChildren(el("p", "ayuda", E.ayuda)); return; }
       if (E.doc) it = docs[tab] || {};
       editando = it; btnNuevo.hidden = btnCancel.hidden = !!(E.doc || E.acceso);
       if (!E.doc && !E.acceso) btnCancel.hidden = !it;
@@ -392,6 +425,7 @@
     form.addEventListener("submit", async e => {
       e.preventDefault();
       const E = ESQ[tab], btn = form.querySelector("[type=submit]");
+      if (E.lectura) return;
       if (E.acceso && FB) {
         const p1 = $("#aPass").value, p2 = $("#aPass2").value;
         if (p1.length < 10) return toast("La contraseña necesita al menos 10 caracteres");
