@@ -15,8 +15,8 @@
   }
   const fs = firebase.firestore(), auth = firebase.auth();
   const admins = (cfg.admins || []).map(e => String(e).toLowerCase());
-  const esAdmin = () => !!(auth.currentUser && admins.includes(String(auth.currentUser.email).toLowerCase()));
-  const ready = new Promise(res => { const off = auth.onAuthStateChanged(() => { off(); res(); }); });
+  let rol = null; const ROLES_OK = ["admin-general", "editor", "consultas"]; async function cargarRol(u){ rol = null; if (!u) return; const em = String(u.email || "").toLowerCase(); if (admins.includes(em)) { rol = "admin-general"; return; } try { const s = await fs.doc("usuarios/" + u.uid).get(); if (s.exists && ROLES_OK.includes(s.data().rol)) rol = s.data().rol; } catch(e) { rol = null; } } const esAdmin = () => !!(auth.currentUser && rol); const getRol = () => rol;
+  const ready = new Promise(res => { const off = auth.onAuthStateChanged(async u => { off(); await cargarRol(u); res(); }); }); auth.onAuthStateChanged(u => { if (!u) rol = null; }); const _si = auth.signInWithEmailAndPassword.bind(auth); auth.signInWithEmailAndPassword = async (e, p) => { const r = await _si(e, p); await cargarRol(r.user); return r; };
 
   const docSnap = d => ({id: d.id, exists: d.exists, data: () => d.exists ? d.data() : undefined, metadata: {fromCache: d.metadata.fromCache, hasPendingWrites: d.metadata.hasPendingWrites}});
   const err = e => ({code: e && e.code === "permission-denied" ? "invalid_argument" : (e && e.code) || "unavailable", message: e && e.message});
@@ -43,6 +43,21 @@
     can: async n => { await ready; return n === "data.write" ? esAdmin() : false; },
     id: async () => { await ready; return auth.currentUser ? auth.currentUser.uid : null; },
   };
-  window.BB_FB = {auth, fs, ready, esAdmin, admins, projectId: cfg.projectId};
+  // Helper para llamar Cloud Functions httpsCallable en us-central1.
+  let fns = null; try { fns = firebase.app().functions("us-central1"); } catch(e) { fns = null; }
+  window.BB = window.BB || {};
+  window.BB.fn = function(nombre){
+    if (!fns) return function(){ return Promise.reject(new Error("Functions no esta cargado")); };
+    const call = fns.httpsCallable(nombre);
+    return function(data){ return call(data || {}).then(r => r.data); };
+  };
+  // Shim window.BB: puente para admin.js viejo que llama BB.getDb()/BB.canEdit().
+  window.BB = window.BB || {};
+  window.BB.getDb   = async () => db;
+  window.BB.canEdit = async () => { await ready; return esAdmin(); };
+  window.BB.isOwner = async () => { await ready; return esAdmin(); };
+  window.BB.can     = async n => { await ready; return n === "data.write" ? esAdmin() : false; };
+  window.BB.user    = window.BB.user || { id: async () => { await ready; return auth.currentUser ? auth.currentUser.uid : null; } };
+  window.BB_FB = {auth, fs, ready, esAdmin, admins, rol: getRol, projectId: cfg.projectId};
   window.claude = {use: async name => name === "db" ? db : name === "user" ? user : null};
 })();

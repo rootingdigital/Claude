@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function rolEs(r) {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/usuarios/$(request.auth.uid))
+        && get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data.rol == r;
+    }
+    function esAdminGeneral() {
+      return request.auth != null && (
+        request.auth.token.email in ["admin@biobamboo.com.ar","rootingdigital@gmail.com"]
+        || rolEs("admin-general")
+      );
+    }
+    function esEditor()    { return esAdminGeneral() || rolEs("editor"); }
+    function esConsultas() { return esAdminGeneral() || rolEs("consultas"); }
+
+    // Contenido del sitio: lo lee todo el mundo; editan admin-general y editor.
+    match /productos/{doc}  { allow read: if true; allow write: if esEditor(); }
+    match /categorias/{doc} { allow read: if true; allow write: if esEditor(); }
+    match /equipo/{doc}     { allow read: if true; allow write: if esEditor(); }
+    match /promos/{doc}     { allow read: if true; allow write: if esEditor(); }
+    match /blog/{doc}       { allow read: if true; allow write: if esEditor(); }
+    match /config/{doc}     { allow read: if true; allow write: if esEditor(); }
+
+    // Consultas del formulario: cualquiera crea; leen/responden admin-general, editor y consultas.
+    match /consultas/{doc} {
+      allow create: if true;
+      allow read, update, delete: if esEditor() || esConsultas();
+    }
+
+    // Usuarios: solo admin-general lee/escribe desde el panel.
+    // (Las creaciones reales las hace la Cloud Function con Admin SDK.)
+    match /usuarios/{doc} { allow read: if request.auth != null && request.auth.uid == doc; allow read, write: if esAdminGeneral(); }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}

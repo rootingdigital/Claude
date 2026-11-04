@@ -405,7 +405,7 @@ html:not(.motion) .track{flex-wrap:wrap}
 .campo{display:grid;gap:8px}
 .campo label{font-size:.9rem;color:var(--ink-2);display:flex;justify-content:space-between;gap:10px;font-weight:500}
 .campo label output{font-family:var(--f-mono);color:var(--head)}
-.campo input[type=number],.campo input[type=text],.campo input[type=email],.campo input[type=tel],.campo select,.campo textarea{
+.campo input[type=number],.campo input[type=text],.campo input[type=email],.campo input[type="password"],.campo input[type=tel],.campo select,.campo textarea{
   width:100%;font:inherit;color:var(--ink);background:var(--field-bg);border:1px solid var(--field-border);border-radius:12px;padding:.75em .9em}
 .campo input:focus,.campo select:focus,.campo textarea:focus{outline:2px solid var(--acc);outline-offset:0;border-color:var(--acc)}
 .campo textarea{min-height:110px;resize:vertical}
@@ -758,7 +758,7 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
 
 /* Velo de vidrio con colores de marca sobre el video del banner: tiñe y suaviza, pero deja ver el video */
 .hero-velo{position:absolute;inset:0;z-index:1;pointer-events:none}
-.hero .hero-velo{opacity:1;
+.hero .hero-velo{opacity:1;background:linear-gradient(180deg,rgba(0,0,0,.55) 0%,rgba(0,0,0,.35) 45%,rgba(0,0,0,.6) 100%);
   background:linear-gradient(160deg,rgba(48,82,99,.5) 0%,rgba(48,82,99,.3) 50%,rgba(163,201,86,.26) 100%);
   -webkit-backdrop-filter:blur(3px) saturate(115%);backdrop-filter:blur(3px) saturate(115%)}
 .hero.con-video .hero-velo::after{content:"";position:absolute;inset:0;mix-blend-mode:soft-light;
@@ -1057,3 +1057,43 @@ html.leaving main,html.leaving footer.pie{opacity:0;transform:translateY(-12px);
 @media (max-width:860px){.rse-top{grid-template-columns:1fr}.rse-box .lista{columns:1}.rse-box .lista li:last-child{border-bottom:0}}
 @media (max-width:640px){.rse-box .lista li{font-size:.92rem}}
 .rse-top .prose p{font-size:1rem;line-height:1.65}.rse-top .prose .lead{font-size:clamp(1.05rem,1.4vw,1.18rem)}
+
+/* ---------- Footer: contactos WhatsApp + mail en dos filas ---------- */
+.pie-contacto{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;color:inherit;text-decoration:none;width:fit-content;transition:background .2s}
+.pie-contacto svg{width:20px;height:20px;flex:none}
+.pie-contacto span{font-size:.95rem;line-height:1.2}
+.pie-contacto:hover{background:rgba(163,201,86,.12)}
+.pie .pie-contacto + .pie-contacto{margin-top:6px}
+/* ---------- Hero: ocultar escena animada hasta que carga el video real ---------- */
+.hero canvas{opacity:0;transition:opacity .4s ease-out}
+.hero.con-video canvas{opacity:1}
+/* ---------- Panel: sección Usuarios (admin general) ---------- */
+.panel-usuarios{display:none;padding:20px;max-width:900px;margin:20px auto}
+body[data-tab="acceso"] .panel-usuarios{display:block}
+body[data-tab="__ninguno__"] #admLista,
+body[data-tab="__ninguno__"] #admForm{display:none !important}
+.panel-usuarios .u-head h2{margin:0 0 4px;font-size:1.4rem}
+.panel-usuarios .u-head .muted{color:#6b7a7f;margin:0 0 20px;font-size:.9rem}
+.panel-usuarios .u-form{display:grid;gap:12px;padding:20px;border-radius:12px;margin-bottom:28px;background:rgba(255,255,255,.6)}
+.panel-usuarios .u-row{display:flex;flex-direction:column;gap:4px}
+.panel-usuarios .u-row label{font-size:.85rem;color:#4a5a5f;font-weight:500}
+.panel-usuarios .u-row input,
+.panel-usuarios .u-row select{padding:10px 12px;border:1px solid #cfd8dc;border-radius:8px;font:inherit;background:#fff}
+.panel-usuarios .u-row:last-child{flex-direction:row;align-items:center;gap:12px;flex-wrap:wrap}
+.panel-usuarios .u-msg{font-size:.9rem}
+.panel-usuarios .u-msg.ok{color:#2e7d32}
+.panel-usuarios .u-msg.err{color:#c62828}
+.panel-usuarios .u-tabla table{width:100%;border-collapse:collapse;background:#fff;border-radius:8px;overflow:hidden}
+.panel-usuarios .u-tabla th,
+.panel-usuarios .u-tabla td{padding:10px 12px;text-align:left;border-bottom:1px solid #eee;font-size:.9rem}
+.panel-usuarios .u-tabla th{background:#f5f8fa;font-weight:600;color:#4a5a5f}
+.panel-usuarios .u-tabla .muted{color:#6b7a7f;font-style:italic}
+.panel-usuarios .mini.peligro.conf{background:#c62828;color:#fff}
+/* bb-login-fix */
+#lCrear{display:none !important}
+
+/* bb-usuarios-form */
+.panel-usuarios .u-form{max-width:560px}
+.panel-usuarios .u-row label{display:flex !important;flex-direction:column;align-items:stretch;gap:6px;width:100%;font-size:.85rem;font-weight:600;color:#4a5a5f}
+.panel-usuarios .u-row input,.panel-usuarios .u-row select{display:block;width:100% !important;box-sizing:border-box;height:48px;padding:0 14px;border:1px solid rgba(48,82,99,.2);border-radius:12px;background:#fff;font:inherit;font-size:1rem;color:inherit}
+.panel-usuarios .u-row:last-child{flex-direction:row;align-items:center;gap:14px;flex-wrap:wrap}

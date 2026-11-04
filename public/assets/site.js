@@ -1,4 +1,4 @@
-/* bioBamboo · comportamiento compartido: tema, header de vidrio, menú, revelados, dock, índice */
+﻿/* bioBamboo · comportamiento compartido: tema, header de vidrio, menú, revelados, dock, índice */
 (function(){
   "use strict";
   const root = document.documentElement;
@@ -7,7 +7,7 @@
   const BB = window.BB = window.BB || {};
   BB.reduced = reduced; BB.clamp = clamp;
   BB.frameHooks = BB.frameHooks || []; BB.layoutHooks = BB.layoutHooks || [];
-  BB.WA_NUM = "5493462654315";
+  BB.WA_NUM = "5493582406548";
   BB.wa = t => "https://wa.me/" + BB.WA_NUM + "?text=" + encodeURIComponent(t);
 
   /* ---------- Tema (claro / noche) ---------- */

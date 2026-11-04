@@ -1,14 +1,14 @@
-/* bioBamboo · Home: banner del rodeo, lente de ecografía, ciclo de 365 días, escenas con scroll */
+﻿/* bioBamboo · Home: banner del rodeo, lente de ecografía, ciclo de 365 días, escenas con scroll */
 (function(){
   "use strict";
   /* Primer cuadro del video: se ve desde el primer instante, mientras el video carga. */
   const MOVIL = matchMedia("(max-width:700px)").matches;
   const CONEXION = navigator.connection || {}, AHORRO = !!(CONEXION.saveData || /(^|-)2g$/.test(CONEXION.effectiveType || ""));
   const HERO_FOTO = MOVIL ? "assets/hero-poster-m.jpg" : "assets/hero-poster.jpg";
-  /* Video del banner: archivo propio (p. ej. "assets/hero.mp4?v=20261009n") y el tramo que se repite en loop, en segundos. */
+  /* Video del banner: archivo propio (p. ej. "assets/hero.mp4?v=20261027a") y el tramo que se repite en loop, en segundos. */
   // hero.mp4 / hero.webm ya son el tramo 0:25–0:40 del video original (15 s), así que el loop va de 0 a 15
   /* En celulares se usa una versión liviana (854 px, ~1,2 MB); con ahorro de datos o 2G no se carga el video y queda la foto. */
-  const HERO_VIDEO = AHORRO ? "" : MOVIL ? "assets/hero-m.mp4?v=20261009n" : (() => { const t = document.createElement("video"); return t.canPlayType('video/webm; codecs="vp9"') ? "assets/hero.webm?v=20261009n" : "assets/hero.mp4?v=20261009n"; })(), VIDEO_DESDE = 0, VIDEO_HASTA = 15;
+  const HERO_VIDEO = AHORRO ? "" : MOVIL ? "assets/hero-m.mp4?v=20261027a" : (() => { const t = document.createElement("video"); return t.canPlayType('video/webm; codecs="vp9"') ? "assets/hero.webm?v=20261027a" : "assets/hero.mp4?v=20261027a"; })(), VIDEO_DESDE = 0, VIDEO_HASTA = 15;
   const BB = window.BB, reduced = BB.reduced, clamp = BB.clamp, wa = BB.wa;
   const desktopMQ = matchMedia("(min-width:861px)");
   const ease = t => t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
@@ -30,7 +30,7 @@
     v.addEventListener("canplay", () => { foto = v; document.getElementById("inicio").classList.add("con-video"); if (!reduced) v.play().catch(() => {}); }, {once: true});
     v.src = HERO_VIDEO;
   };
-  if (HERO_VIDEO) { if (document.readyState === "complete") setTimeout(arrancarVideo, 200); else addEventListener("load", () => setTimeout(arrancarVideo, 200), {once: true}); }
+  if (HERO_VIDEO) { arrancarVideo(); }
   function seedHero(){
     DPR = Math.min(devicePixelRatio || 1, 2);
     W = cv.clientWidth; H = cv.clientHeight;

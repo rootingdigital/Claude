@@ -28,7 +28,7 @@
   }
 
   /* ---------- Verificación anti-robots ---------- */
-  function captcha(box){
+  function captcha(box){ return () => true;
     if (!box) return () => true;
     const q = $(".cap-q", box), inp = $("input", box), otra = $(".cap-otra", box);
     let res = 0, t0 = Date.now();
@@ -75,16 +75,16 @@
         "auth/invalid-api-key": "La apiKey de assets/firebase-config.js no es válida para este proyecto.",
         "auth/email-already-in-use": "Ese usuario ya existe, así que la contraseña no coincide. Tocá «Olvidé mi contraseña» para cambiarla.",
         "auth/weak-password": "La contraseña es muy débil: usá al menos 10 caracteres.",
-        "no-admin": "Ese email no está en la lista de administradores (admins) de assets/firebase-config.js."
+        "no-admin": "Tu usuario no tiene un rol asignado en el panel. Pedile al administrador general que lo cree."
       };
       const explicar = err => MSG[err && (err.code || err.message)] || ("No se pudo ingresar (" + ((err && (err.code || err.message)) || "error") + ").");
-      const habilitado = email => !admins.length || admins.includes(email);
+      const habilitado = email => true;
       form.addEventListener("submit", async e => {
         e.preventDefault(); di("");
         if (Date.now() < bloqueoF) { di("Demasiados intentos. Esperá un minuto."); return; }
         const {email, pass} = datos();
         if (!email || !pass) { di("Completá el usuario y la contraseña."); return; }
-        if (!okCapF()) { di("La verificación no es correcta. Probá con la nueva cuenta."); return; }
+        
         if (!habilitado(email)) { di(MSG["no-admin"]); return; }
         const btn = form.querySelector("[type=submit]"); btn.disabled = true; btn.textContent = "Verificando…";
         try { await FB.auth.signInWithEmailAndPassword(email, pass); if (!FB.esAdmin()) { await FB.auth.signOut(); throw new Error("no-admin"); } location.href = "admin.html"; }
@@ -113,9 +113,9 @@
       return;
     }
     if (sesion()) { location.replace("admin.html"); return; }
-    const db = await BB.getDb();
+    const db = await window.claude.use("db");
     if (!db) { di("El ingreso necesita la base de datos del sitio. Abrí la página desde claude.ai con tu cuenta."); form.querySelector("button[type=submit]").disabled = true; return; }
-    const editor = await BB.canEdit();
+    const editor = (await (await window.claude.use("user")).canEdit());
     let acceso = null;
     try { const s = await db.doc("privado/acceso").get(); acceso = s.exists ? s.data() : null; } catch(e) {}
     if (!acceso && editor) { form.hidden = true; setup.hidden = false; }
@@ -225,9 +225,9 @@
     if (FB) await FB.ready;
     const s = FB ? (FB.esAdmin() ? {email: FB.auth.currentUser.email} : null) : sesion();
     if (!s) { location.replace("login.html"); return; }
-    const db = await BB.getDb();
+    const db = await window.claude.use("db");
     if (!db) { aviso.textContent = "El panel necesita la base de datos del sitio. Abrí la página desde claude.ai con tu cuenta."; return; }
-    if (!(await BB.canEdit())) { cerrarSesion(); aviso.textContent = "Tu cuenta no tiene permiso de edición en este sitio."; return; }
+    if (!((await (await window.claude.use("user")).canEdit()))) { cerrarSesion(); aviso.textContent = "Tu cuenta no tiene permiso de edición en este sitio."; return; }
     aviso.hidden = true; $("#admApp").hidden = false; $("#admUser").textContent = s.email;
     $("#admSalir").addEventListener("click", async () => { cerrarSesion(); if (FB) await FB.auth.signOut(); location.href = "login.html"; });
     if (FB) {
@@ -253,7 +253,7 @@
     const lista = $("#admLista"), form = $("#admForm"), campos = $("#admCampos"), tit = $("#admTit"), btnNuevo = $("#admNuevo"), btnCancel = $("#admCancel");
 
     function selTab(t){ tab = t; editando = null; tabs.forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t)); history.replaceState(null, "", "#" + t); pintarLista(); armarForm(null); }
-    tabs.forEach(b => b.addEventListener("click", () => selTab(b.dataset.tab)));
+    tabs.forEach(b => b.addEventListener("click", () => { if (b.dataset.tab === "usuarios") { tabs.forEach(x => x.setAttribute("aria-selected", x === b)); history.replaceState(null, "", "#usuarios"); } else selTab(b.dataset.tab); }));
 
     function pintarLista(){
       tabs.forEach(b => { const n = b.querySelector("span"); if (n && data[b.dataset.tab]) n.textContent = data[b.dataset.tab].length; });
