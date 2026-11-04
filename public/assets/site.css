@@ -1113,3 +1113,6 @@ body[data-tab="__ninguno__"] #admForm{display:none !important}
 
 /* bb-captcha */
 .g-recaptcha{display:flex;justify-content:center;margin:4px 0 10px}
+
+/* bb-captcha-contacto */
+.form .g-recaptcha{justify-content:flex-start;margin:6px 0}

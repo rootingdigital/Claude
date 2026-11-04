@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=Fira+Sans:wght@300;400;500;600;700;800&family=Fira+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=20261104d">
+<link rel="stylesheet" href="assets/site.css?v=20261104j">
 <script>try{var t=localStorage.getItem("bb-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body>
@@ -91,6 +91,7 @@
   <div class="campo"><label for="fServ">Me interesa</label><select id="fServ"><option data-k="reproduccion">Reproducción y genética</option><option data-k="sanidad">Sanidad</option><option data-k="nutricion">Nutrición y forrajes</option><option data-k="negocios">Negocios ganaderos</option><option data-k="biosmart">Programa bioSmart</option><option data-k="gallagher">Gallagher</option><option data-k="koppert">Koppert</option><option data-k="catalogo">Catálogo de productos</option><option data-k="otro">Otro</option></select></div>
   <div class="campo full"><label for="fMsg">Mensaje</label><textarea id="fMsg" rows="4" maxlength="2500" placeholder="Contanos brevemente qué querés mejorar"></textarea></div>
   <div class="hp" aria-hidden="true"><label for="fWeb2">No completar</label><input type="text" id="fWeb2" tabindex="-1" autocomplete="off"></div>
+  <div class="g-recaptcha full" data-sitekey="6LfgPBAuAAAAABZMznnlQEvpgz1fanSP5EG3G_rE"></div>
   <div class="form-pie full"><button class="btn btn-wa" type="submit">Enviar consulta</button><span class="form-nota">* Datos obligatorios</span></div>
   <p class="form-ok" id="formOk" role="status" hidden></p>
   <p class="form-err" id="formErr" role="alert" hidden></p>
@@ -142,9 +143,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
-<script src="assets/firebase-config.js?v=20261104d"></script>
-<script src="assets/fb.js?v=20261104d"></script>
-<script src="assets/site.js?v=20261104d"></script>
-<script src="assets/cms.js?v=20261104d"></script>
+<script src="assets/firebase-config.js?v=20261104j"></script>
+<script src="assets/fb.js?v=20261104j"></script>
+<script src="assets/site.js?v=20261104j"></script>
+<script src="assets/cms.js?v=20261104j"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="assets/contacto-captcha.js?v=20261104j"></script>
 </body>
 </html>
