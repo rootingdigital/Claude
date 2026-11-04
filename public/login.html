@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@500;600;700&family=Fira+Sans:wght@300;400;500;600;700;800&family=Fira+Mono:wght@400;500&display=swap">
-<link rel="stylesheet" href="assets/site.css?v=20261104d">
+<link rel="stylesheet" href="assets/site.css?v=20261104i">
 <script>try{var t=localStorage.getItem("bb-theme");if(t==="dark"||t==="light")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body data-solid>
@@ -74,7 +74,8 @@
   <div class="campo"><label for="lPass">Contraseña</label><input type="password" id="lPass" autocomplete="current-password" required></div>
   <div class="hp" aria-hidden="true"><label for="fWeb">No completar</label><input type="text" id="fWeb" tabindex="-1" autocomplete="off"></div>
   
-  <button class="btn btn-wa" type="submit" style="justify-self:stretch;justify-content:center">Ingresar</button>
+  <div class="g-recaptcha" data-sitekey="6LfgPBAuAAAAABZMznnlQEvpgz1fanSP5EG3G_rE"></div>
+    <button class="btn btn-wa" type="submit" style="justify-self:stretch;justify-content:center">Ingresar</button>
 </form>
 <form id="setupForm" hidden novalidate>
   <p class="aviso">Primera vez: creá el usuario administrador principal. Después vas a poder cambiarlo desde el panel.</p>
@@ -137,9 +138,11 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-check-compat.js"></script>
-<script src="assets/firebase-config.js?v=20261104d"></script>
-<script src="assets/fb.js?v=20261104d"></script>
-<script src="assets/site.js?v=20261104d"></script>
-<script src="assets/cms.js?v=20261104d"></script><script src="assets/admin.js?v=20261104d"></script>
+<script src="assets/firebase-config.js?v=20261104i"></script>
+<script src="assets/fb.js?v=20261104i"></script>
+<script src="assets/site.js?v=20261104i"></script>
+<script src="assets/cms.js?v=20261104i"></script><script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<script src="assets/admin.js?v=20261104i"></script>
+<script src="assets/login-captcha.js?v=20261104i"></script>
 </body>
 </html>

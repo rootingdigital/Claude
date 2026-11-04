@@ -62,7 +62,7 @@
       b.addEventListener("click", () => onEliminar(u.uid, u.email, b));
       tdAcc.appendChild(b);
     } else { tdAcc.appendChild(el("span", "muted", "(vos)")); }
-    tr.appendChild(tdAcc);
+    const ed = el("button", "mini", "Editar"); ed.type = "button"; ed.addEventListener("click", () => abrirEditor(u, miUid)); tdAcc.insertBefore(ed, tdAcc.firstChild); tr.appendChild(tdAcc);
     return tr;
   }
 
@@ -114,6 +114,34 @@
     btn.disabled = true;
     try { await eliminarUsuario(uid); refrescarTabla(); }
     catch (e) { alert("No se pudo eliminar: " + (e.message || e.code || "error")); btn.disabled = false; btn.classList.remove("conf"); btn.textContent = "Eliminar"; }
+  }
+
+  function abrirEditor(u, miUid){
+    const yo = u.uid === miUid;
+    const fondo = el("div", "u-modal"); const f = el("form", "u-modal-caja");
+    f.innerHTML = `<h3>Editar usuario</h3>` +
+      `<label>Email<input type="email" name="email" required></label>` +
+      `<label>Nombre<input type="text" name="nombre"></label>` +
+      `<label>Nueva contraseña (dejar vacío para no cambiarla)<input type="text" name="password" minlength="6" autocomplete="new-password"></label>` +
+      `<label>Rol<select name="rol">` + ROLES.map(r => `<option value="${r.v}">${r.t}</option>`).join("") + `</select></label>` +
+      `<label class="u-check"><input type="checkbox" name="off"> Acceso deshabilitado</label>` +
+      `<div class="u-modal-acc"><button class="btn btn-wa" type="submit">Guardar cambios</button><button class="mini" type="button" data-cancel>Cancelar</button><span class="u-msg" data-msg></span></div>`;
+    f.email.value = u.email || ""; f.nombre.value = u.nombre || ""; f.rol.value = u.rol || "editor"; f.off.checked = !!u.deshabilitado;
+    if (yo) { f.rol.disabled = true; f.off.disabled = true; }
+    fondo.appendChild(f); document.body.appendChild(fondo);
+    const cerrar = () => fondo.remove();
+    f.querySelector("[data-cancel]").addEventListener("click", cerrar);
+    fondo.addEventListener("click", e => { if (e.target === fondo) cerrar(); });
+    f.addEventListener("submit", async ev => {
+      ev.preventDefault();
+      const msg = f.querySelector("[data-msg]"), btn = f.querySelector("button[type=submit]");
+      const data = {uid: u.uid, email: f.email.value.trim().toLowerCase(), nombre: f.nombre.value.trim()};
+      if (f.password.value) data.password = f.password.value;
+      if (!yo) { data.rol = f.rol.value; data.deshabilitado = f.off.checked; }
+      btn.disabled = true; btn.textContent = "Guardando…"; msg.textContent = ""; msg.className = "u-msg";
+      try { await __fn("editarUsuario")(data); cerrar(); refrescarTabla(); }
+      catch (e) { msg.textContent = "No se pudo guardar: " + (e.message || e.code || "error"); msg.className = "u-msg err"; btn.disabled = false; btn.textContent = "Guardar cambios"; }
+    });
   }
 
   function activar(){

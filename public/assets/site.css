@@ -1097,3 +1097,19 @@ body[data-tab="__ninguno__"] #admForm{display:none !important}
 .panel-usuarios .u-row label{display:flex !important;flex-direction:column;align-items:stretch;gap:6px;width:100%;font-size:.85rem;font-weight:600;color:#4a5a5f}
 .panel-usuarios .u-row input,.panel-usuarios .u-row select{display:block;width:100% !important;box-sizing:border-box;height:48px;padding:0 14px;border:1px solid rgba(48,82,99,.2);border-radius:12px;background:#fff;font:inherit;font-size:1rem;color:inherit}
 .panel-usuarios .u-row:last-child{flex-direction:row;align-items:center;gap:14px;flex-wrap:wrap}
+
+/* bb-usuarios-editar */
+.panel-usuarios td .mini{margin-right:6px}
+.u-modal{position:fixed;inset:0;background:rgba(10,25,32,.55);display:flex;align-items:center;justify-content:center;z-index:9999;padding:16px}
+.u-modal-caja{background:#fff;border-radius:16px;padding:24px;width:100%;max-width:460px;display:grid;gap:12px;max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.u-modal-caja h3{margin:0 0 4px}
+.u-modal-caja label{display:flex;flex-direction:column;gap:6px;font-size:.85rem;font-weight:600;color:#4a5a5f}
+.u-modal-caja input:not([type=checkbox]),.u-modal-caja select{width:100%;box-sizing:border-box;height:48px;padding:0 14px;border:1px solid rgba(48,82,99,.2);border-radius:12px;background:#fff;font:inherit;font-size:1rem;color:inherit}
+.u-modal-caja .u-check{flex-direction:row;align-items:center;gap:10px}
+.u-modal-acc{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+
+/* bb-login-limpio */
+.login-nota,.login-diag{display:none !important}
+
+/* bb-captcha */
+.g-recaptcha{display:flex;justify-content:center;margin:4px 0 10px}

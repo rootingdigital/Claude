@@ -54,3 +54,28 @@ exports.eliminarUsuario = onCall({region: "us-central1"}, async (req) => {
   await getFirestore().doc("usuarios/" + uid).delete().catch(() => null);
   return {ok: true};
 });
+
+exports.editarUsuario = onCall({region: "us-central1"}, async (req) => {
+  if (!req.auth) throw new HttpsError("unauthenticated", "Hay que iniciar sesion.");
+  if (!(await esAdminGeneral(req.auth.uid)))
+    throw new HttpsError("permission-denied", "Solo el administrador general puede editar usuarios.");
+  const {uid, nombre, rol, password, email, deshabilitado} = req.data || {};
+  if (!uid) throw new HttpsError("invalid-argument", "Falta el uid.");
+  if (rol !== undefined && !ROLES_VALIDOS.includes(rol)) throw new HttpsError("invalid-argument", "Rol no valido.");
+  if (password && password.length < 6) throw new HttpsError("invalid-argument", "La contrasena debe tener al menos 6 caracteres.");
+  if (uid === req.auth.uid && ((rol !== undefined && rol !== "admin-general") || deshabilitado === true))
+    throw new HttpsError("failed-precondition", "No podes quitarte el acceso a vos mismo.");
+  const cambios = {};
+  if (nombre !== undefined) cambios.displayName = nombre || null;
+  if (password) cambios.password = password;
+  if (email) cambios.email = email;
+  if (deshabilitado !== undefined) cambios.disabled = !!deshabilitado;
+  if (Object.keys(cambios).length) await getAuth().updateUser(uid, cambios).catch((e) => { throw new HttpsError("invalid-argument", e.message); });
+  const doc = {editado: new Date().toISOString(), editadoPor: req.auth.token.email || req.auth.uid};
+  if (nombre !== undefined) doc.nombre = nombre;
+  if (rol !== undefined) doc.rol = rol;
+  if (email) doc.email = email;
+  if (deshabilitado !== undefined) doc.deshabilitado = !!deshabilitado;
+  await getFirestore().doc("usuarios/" + uid).set(doc, {merge: true});
+  return {ok: true};
+});
